@@ -11,6 +11,7 @@ CFLAGS2="-Wl,--gc-sections"
 echo "Running *nix build script for '$EXENAME'..."
 cd "$(dirname "$0")"
 mkdir -p ../bin
+mkdir -p ../test
 cd ../src
 
 # Determine which C compiler to use
