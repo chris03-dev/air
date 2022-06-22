@@ -1,6 +1,6 @@
 # air
 
-An assembler designed for [versec](https://codeberg.org/chris03-dev/verse), a compiler for the verse programming language.
+An assembler designed for [versec](https://github.com/chris03-dev/versec), a compiler for the verse programming language.
 
 Want to try out the assembler? Tinkering with `/inst/out.air` is a good place to start.
 
