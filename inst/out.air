@@ -1,0 +1,74 @@
+z8 3
+hello: world: d4 0xffffffff, 0xa0, 0x12121212
+
+.united:
+z1 hex #- hex
+dspx hex, 1, 2
+var hex 7 << 8# \
+- world.united
+
+d1 0x10 #Fix this
+
+_<
+sys echo "LMAO you fail"
+set p4 ri ax, 10000
+set i4 ri "hello world"
+>_
+
+pad 0x10
+get i4 rr ax, ax
+al 16
+get i4 rr cx, ax
+
+# pad 0x10
+# get p4 rr f0, f0
+# pad 0x10
+# get p4 rr f0, f8
+# pad 0x10
+# get p4 rr f8, f0
+# pad 0x10
+# get p4 rr f8, f8
+# pad 0x10
+# get p4 rr f8, ff
+# pad 0x10
+# get p4 rr ff, f8
+# pad 0x10
+# get p4 rr ff, ff
+
+# FIXME: File is not created within source file's directory
+sys echo "Hello \
+World LMAO HAHAHAH" #> helloworld.txt
+
+pad 0x10
+get i8 rr ax, f0
+pad 0x10
+get i8 rr cx, f0
+pad 0x10
+get i8 rr ax, f8
+pad 0x10
+get i8 rr cx, f8
+pad 0x10
+get i8 rr r8, f0
+pad 0x10
+get i8 rr r9, f0
+pad 0x10
+get i8 rr r8, f8
+pad 0x10
+get i8 rr r9, f8
+
+pad 0x10
+get p8 rr f0, ax
+pad 0x10
+get p8 rr f8, ax
+pad 0x10
+get p8 rr f0, r9
+pad 0x10
+get p8 rr f8, r9
+
+# pad 0x10
+# d1 0xba, 0xd0
+
+#lw
+#setcr
+#getgs ax, 0
+#set ax, 0

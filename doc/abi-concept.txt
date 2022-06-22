@@ -1,0 +1,404 @@
+XT-RISC
+
+set8mr fp, sp
+
+subrd sp, 8
+getrr fp, sp
+subrd sp, 32
+
+...
+
+addrd sp, 40
+get1mr fp, sp
+ret
+
+Registers
+
+- Integer:
+	0x00 - zr
+	0x01 - fp
+	0x02 - sp
+	0x03 to 0x05 - x0-x2
+	0x06 to 0x0b - i0-i5
+	0x0c to 0x0f - a0-a3
+
+- Precise:
+	0x00 to 0x0f - p0-p15
+
+---
+
+Register partial equivalents
+
+-- -> zr - zero operand
+
+bp -> fp - frame/base pointer
+sp -> sp - stack pointer
+
+ax -> x0 - left operand value/pointer
+cx -> x1 - right operand value/pointer
+dx -> x2 - operand index (used in array)
+
+ra -> i0 - 1st immediate
+rb -> i1 - 2nd immediate
+rc -> i2 - 3rd immediate
+rd -> i3 - 4th immediate
+re -> i4 - 5th immediate
+rf -> i5 - 6th immediate
+
+di -> a0 - 1st argument
+si -> a1 - 2nd argument
+r8 -> a4 - 3rd argument
+r9 -> a5 - 4th argument
+
+---
+
+Opcode Types
+
+Type 1
+0   4   8
+Op
+|       |
+00000000
+
+
+Type 2.a
+0   4   8   12  16
+Op      Rd  Rs1
+|       |   |   |
+0000000000000000
+
+Type 2.b
+0   4   8   12  16
+Op      Rd  Opx
+|       |   |   |
+0000000000000000
+
+Type 2.c
+0   4   8   12  16
+Op      Rd  Imm
+|       |   |   |
+0000000000000000
+
+
+Type 3.a
+0   4   8   12  16  20  24
+Op      Rd  Opx Rs1 Rs2 
+|       |   |   |   |   |
+0000000000000000000000000
+
+Type 3.b
+0   4   8   12  16  20  24
+Op      Rd  Opx Imm
+|       |   |   |       |
+0000000000000000000000000
+
+
+Type 4.a
+0   4   8   12  16  20  24  28  32
+Op      Rd  Rs1 Imm
+|       |   |   |               |
+00000000000000000000000000000000
+
+Type 4.b
+0   4   8   12  16  20  24  28  32
+Op      Rd  Opx Imm
+|       |   |   |               |
+00000000000000000000000000000000
+
+Type 4.x
+0   4   8   12  16  20  24  28  32
+Op      Rd  N/A Imm
+|       |   |   |               |
+00000000000000000000000000000000
+
+
+Type 6.a
+0   4   8   12  16  20  24  28  32  36  40  44  48
+Op      Rd  Rs1 Imm
+|       |   |   |                               |
+000000000000000000000000000000000000000000000000
+
+Type 6.b
+0   4   8   12  16  20  24  28  32  36  40  44  48
+Op      Rd  Opx Imm
+|       |   |   |                               |
+000000000000000000000000000000000000000000000000
+
+---
+
+Opcodes
+
+- One-Register Instructions
+
+Type  Op     Opx   Alias
+2.b - 0x1c - 0x0 - sx1   - sign-extend integer byte
+2.b - 0x1c - 0x1 - sx2   - sign-extend integer word
+2.b - 0x1c - 0x2 - sx4   - sign-extend integer dword
+2.b - 0x1c - 0x3 - sx8   - sign-extend integer qword
+2.b - 0x1c - 0x4 - sxx   - sign-extend integer xword
+2.b - 0x1c - 0x5 - sxy   - sign-extend integer yword
+
+2.b - 0x1d - 0x0 - zx1   - zero-extend integer byte
+2.b - 0x1d - 0x1 - zx2   - zero-extend integer word
+2.b - 0x1d - 0x2 - zx4   - zero-extend integer dword
+2.b - 0x1d - 0x3 - zx8   - zero-extend integer qword
+2.b - 0x1d - 0x4 - zxx   - zero-extend integer xword
+2.b - 0x1d - 0x5 - zxy   - zero-extend integer yword
+
+1   - 0x1e - N/A - nop   - no instruction
+2.a - 0x1f - N/A - not   - perform not operation with integer (x)word and source integer (x) word
+
+
+- Load integer
+
+Type  Op     Alias
+2.a - 0x20 - getr    - get integer (x)word from source integer (x)word
+2.a - 0x21 - get1r   - get integer byte from source integer byte
+2.a - 0x22 - get2r   - get integer word from source integer word
+2.a - 0x23 - get4r   - get integer dword from source integer dword
+2.a - 0x24 - get8r   - get integer qword from source integer qword
+2.a - 0x25 - getxr   - get integer xword from source integer xword
+2.a - 0x26 - getyr   - get integer yword from source integer yword
+
+2.a - 0x28 - get1mr  - get integer byte from source register as address
+2.a - 0x29 - get2mr  - get integer word from source register as address
+2.a - 0x2a - get4mr  - get integer dword from source register as address
+2.a - 0x2b - get8mr  - get integer qword from source register as address
+
+6.a - 0x2c - get1mrd - get integer byte from source integer (x)word and immediate dword as address
+6.a - 0x2d - get2mrd - get integer word from source integer (x)word and immediate dword as address
+6.a - 0x2e - get4mrd - get integer dword from source integer (x)word and immediate dword as address
+6.a - 0x2f - get8mrd - get integer qword from source integer (x)word and immediate dword as address
+
+
+- Store integer
+
+Type  Op     Alias
+2.a - 0x30 - set1mr - set integer byte to source integer (x)word as address
+2.a - 0x31 - set2mr - set integer word to source integer (x)word as address
+2.a - 0x32 - set4mr - set integer dword to source integer (x)word as address
+2.a - 0x33 - set8mr - set integer qword to source integer (x)word as address
+2.a - 0x34 - setxmr - set integer xword to source integer (x)word as address
+2.a - 0x35 - setymr - set integer yword to source integer (x)word as address
+2.a - 0x36 - setzmr - set integer zword to source integer (x)word as address
+
+6.a - 0x38 - set1mrd - set integer byte to source integer (x)word and immediate dword as address
+6.a - 0x39 - set2mrd - set integer word to source integer (x)word and immediate dword as address
+6.a - 0x3a - set4mrd - set integer dword to source integer (x)word and immediate dword as address
+6.a - 0x3b - set8mrd - set integer qword to source integer (x)word and immediate dword as address
+6.a - 0x3c - setxmrd - set integer xword to source integer (x)word and immediate dword as address
+6.a - 0x3d - setymrd - set integer yword to source integer (x)word and immediate dword as address
+6.a - 0x3e - setzmrd - set integer zword to source integer (x)word and immediate dword as address
+
+
+- Bit Manipulation
+
+Type  Op     Alias
+2.a - 0x40 - shlr  - perform logical left shift on integer (x)word with source integer (x)word
+4.x - 0x41 - shlw  - perform logical left shift on integer (x)word with immediate word
+
+2.a - 0x42 - shrr  - perform logical right shift on integer (x)word with source integer (x)word
+4.x - 0x43 - shrw  - perform logical right shift on integer (x)word with immediate word
+
+2 - 0x44 - sarr  - perform arithmetic right shift on integer (x)word with source integer (x)word
+4 - 0x45 - sarw  - perform arithmetic right shift on integer (x)word with immediate word
+
+2 - 0x46 - orr   - perform 'or' operation on integer (x)word with source integer (x)word
+6 - 0x47 - ord   - perform 'or' operation on integer (x)word with immediate dword
+
+2 - 0x48 - andr  - perform 'and' operation on integer (x)word with source integer (x)word
+6 - 0x49 - andd  - perform 'and' operation on integer (x)word with immediate dword
+
+2 - 0x4a - xorr  - perform 'xor' operation on integer (x)word with source integer (x)word
+4 - 0x4b - xorw  - perform 'xor' operation on integer (x)word with immediate word
+6 - 0x4c - xord  - perform 'xor' operation on integer (x)word with immediate dword
+
+2 - 0x4d - not   - perform 'not' operation on integer (x)word
+
+
+- Arithmetic
+
+Type  Op     Opx  Alias
+3 - 0x50 - 0x0 - addrr - get integer (x)word from addition of source integer (x)word and source integer (x)word
+4 - 0x51 - N/A - addrw - get integer (x)word from addition of source integer (x)word and immediate word
+6 - 0x52 - N/A - addrd - get integer (x)word from addition of source integer (x)word and immediate dword
+
+3 - 0x53 - 0x0 - subrr - get integer (x)word from subtraction of source integer (x)word and source integer (x)word
+4 - 0x54 - N/A - subrw - get integer (x)word from subtraction of source integer (x)word and immediate word
+6 - 0x55 - N/A - subrd - get integer (x)word from subtraction of source integer (x)word and immediate dword
+
+3 - 0x56 - 0x0 - mulrr - get integer (x)word from multiplication of source integer (x)word and source integer (x)word
+4 - 0x57 - N/A - mulrw - get integer (x)word from multiplication of source integer (x)word and immediate word
+6 - 0x58 - N/A - mulrd - get integer (x)word from multiplication of source integer (x)word and immediate dword
+
+3 - 0x59 - 0x0 - divrr - get integer (x)word from division of source integer (x)word and source integer (x)word
+4 - 0x5a - N/A - divrw - get integer (x)word from division of source integer (x)word and immediate word
+6 - 0x5b - N/A - divrd - get integer (x)word from division of source integer (x)word and immediate dword
+
+3 - 0x5c - 0x0 - modrr - get integer (x)word from modulus of source integer (x)word and source integer (x)word
+4 - 0x5d - N/A - modrw - get integer (x)word from modulus of source integer (x)word and immediate word
+6 - 0x5e - N/A - modrd - get integer (x)word from modulus of source integer (x)word and immediate dword
+
+
+- Integer/Precise Register Communication
+
+Type  Op     Opx   Alias
+2 - 0x80 - getc4ip - convert and get integer dword from source precise dword
+2 - 0x81 - getc8ip - convert and get integer qword from source precise qword
+2 - 0x82 - getcxip - convert and get integer xword from source precise xword
+2 - 0x83 - getcyip - convert and get integer yword from source precise yword
+2 - 0x84 - getczip - convert and get integer zword from source precise zword
+
+2 - 0x85 - getc4pi - convert and get precise dword from source integer dword
+2 - 0x86 - getc8pi - convert and get precise qword from source integer qword
+2 - 0x87 - getcxpi - convert and get precise xword from source integer xword
+2 - 0x88 - getcypi - convert and get precise yword from source integer yword
+2 - 0x89 - getczpi - convert and get precise zword from source integer zword
+
+2 - 0x90 - getl4ip - get literal sign-extended integer dword from source precise dword
+2 - 0x91 - getl8ip - get literal sign-extended integer qword from source precise qword
+2 - 0x92 - getlxip - get literal sign-extended integer xword from source precise xword
+2 - 0x93 - getlyip - get literal sign-extended integer yword from source precise yword
+2 - 0x94 - getlzip - get literal sign-extended integer zword from source precise zword
+
+2 - 0x95 - getl4pi - get literal sign-extended precise dword from source integer dword
+2 - 0x96 - getl8pi - get literal sign-extended precise qword from source integer qword
+2 - 0x97 - getlxpi - get literal sign-extended precise xword from source integer xword
+2 - 0x98 - getlypi - get literal sign-extended precise yword from source integer yword
+2 - 0x99 - getlzpi - get literal sign-extended precise zword from source integer zword
+
+
+- Precise arithmetic
+
+Type  Op     Opx   Alias
+3 - 0x9a - 0x0 - padd - get precise (x)word from addition of source precise (x)word and source precise (x)word
+3 - 0x9b - 0x0 - psub - get precise (x)word from subtraction of source precise (x)word and source precise (x)word
+3 - 0x9c - 0x0 - pmul - get precise (x)word from multiplication of source precise (x)word and source precise (x)word
+3 - 0x9d - 0x0 - pdiv - get precise (x)word from division of source precise (x)word and source precise (x)word
+3 - 0x9e - 0x0 - pmod - get precise (x)word from modulus of source precise (x)word and source precise (x)word
+
+- SIMD setup
+
+2 - 
+
+
+- SIMD integer arithmetic
+
+Type  Op     Opx   Alias
+3 - 0x50 - 0x1 - add1ia - get integer byte array from addition of source integer byte array and source integer byte array
+3 - 0x50 - 0x2 - add2ia - get integer word array from addition of source integer word array and source integer word array
+3 - 0x50 - 0x3 - add4ia - get integer dword array from addition of source integer dword array and source integer dword array
+3 - 0x50 - 0x4 - add8ia - get integer qword array from addition of source integer qword array and source integer qword array
+3 - 0x50 - 0x5 - addxia - get integer xword array from addition of source integer xword array and source integer xword array
+3 - 0x50 - 0x6 - addyia - get integer yword array from addition of source integer yword array and source integer yword array
+3 - 0x50 - 0x7 - addzia - get integer zword array from addition of source integer zword array and source integer zword array
+
+3 - 0x51 - 0x1 - sub1ia - get integer byte array from subtraction of source integer byte array and source integer byte array
+3 - 0x51 - 0x2 - sub2ia - get integer word array from subtraction of source integer word array and source integer word array
+3 - 0x51 - 0x3 - sub4ia - get integer dword array from subtraction of source integer dword array and source integer dword array
+3 - 0x51 - 0x4 - sub8ia - get integer qword array from subtraction of source integer qword array and source integer qword array
+3 - 0x51 - 0x5 - subxia - get integer xword array from subtraction of source integer xword array and source integer xword array
+3 - 0x51 - 0x6 - subyia - get integer yword array from subtraction of source integer yword array and source integer yword array
+3 - 0x51 - 0x7 - subzia - get integer zword array from subtraction of source integer zword array and source integer zword array
+
+3 - 0x52 - 0x1 - mul1ia - get integer byte array from multiplication of source integer byte array and source integer byte array
+3 - 0x52 - 0x2 - mul2ia - get integer word array from multiplication of source integer word array and source integer word array
+3 - 0x52 - 0x3 - mul4ia - get integer dword array from multiplication of source integer dword array and source integer dword array
+3 - 0x52 - 0x4 - mul8ia - get integer qword array from multiplication of source integer qword array and source integer qword array
+3 - 0x52 - 0x5 - mulxia - get integer xword array from multiplication of source integer xword array and source integer xword array
+3 - 0x52 - 0x6 - mulyia - get integer yword array from multiplication of source integer yword array and source integer yword array
+3 - 0x52 - 0x7 - mulzia - get integer zword array from multiplication of source integer zword array and source integer zword array
+
+3 - 0x53 - 0x1 - div1ia - get integer byte array from division of source integer byte array and source integer byte array
+3 - 0x53 - 0x2 - div2ia - get integer word array from division of source integer word array and source integer word array
+3 - 0x53 - 0x3 - div4ia - get integer dword array from division of source integer dword array and source integer dword array
+3 - 0x53 - 0x4 - div8ia - get integer qword array from division of source integer qword array and source integer qword array
+3 - 0x53 - 0x5 - divxia - get integer xword array from division of source integer xword array and source integer xword array
+3 - 0x53 - 0x6 - divyia - get integer yword array from division of source integer yword array and source integer yword array
+3 - 0x53 - 0x7 - divzia - get integer zword array from division of source integer zword array and source integer zword array
+
+3 - 0x54 - 0x1 - mod1ia - get integer byte array from modulus of source integer byte array and source integer byte array
+3 - 0x54 - 0x2 - mod2ia - get integer word array from modulus of source integer word array and source integer word array
+3 - 0x54 - 0x3 - mod4ia - get integer dword array from modulus of source integer dword array and source integer dword array
+3 - 0x54 - 0x4 - mod8ia - get integer qword array from modulus of source integer qword array and source integer qword array
+3 - 0x54 - 0x5 - modxia - get integer xword array from modulus of source integer xword array and source integer xword array
+3 - 0x54 - 0x6 - modyia - get integer yword array from modulus of source integer yword array and source integer yword array
+3 - 0x54 - 0x7 - modzia - get integer zword array from modulus of source integer zword array and source integer zword array
+
+
+- SIMD precise arithmetic
+
+Type  Op     Opx   Alias
+3 - 0x9a - 0x3 - add4pa - get precise dword array from addition of source precise dword array and source precise dword array
+3 - 0x9a - 0x4 - add8pa - get precise qword array from addition of source precise qword array and source precise qword array
+3 - 0x9a - 0x5 - addxpa - get precise xword array from addition of source precise xword array and source precise xword array
+3 - 0x9a - 0x6 - addypa - get precise yword array from addition of source precise yword array and source precise yword array
+3 - 0x9a - 0x7 - addzpa - get precise zword array from addition of source precise zword array and source precise zword array
+
+3 - 0x9b - 0x3 - sub4pa - get precise dword array from subtraction of source precise dword array and source precise dword array
+3 - 0x9b - 0x4 - sub8pa - get precise qword array from subtraction of source precise qword array and source precise qword array
+3 - 0x9b - 0x5 - subxpa - get precise xword array from subtraction of source precise xword array and source precise xword array
+3 - 0x9b - 0x6 - subypa - get precise yword array from subtraction of source precise yword array and source precise yword array
+3 - 0x9b - 0x7 - subzpa - get precise zword array from subtraction of source precise zword array and source precise zword array
+
+3 - 0x9c - 0x3 - mul4pa - get precise dword array from multiplication of source precise dword array and source precise dword array
+3 - 0x9c - 0x4 - mul8pa - get precise qword array from multiplication of source precise qword array and source precise qword array
+3 - 0x9c - 0x5 - mulxpa - get precise xword array from multiplication of source precise xword array and source precise xword array
+3 - 0x9c - 0x6 - mulypa - get precise yword array from multiplication of source precise yword array and source precise yword array
+3 - 0x9c - 0x7 - mulzpa - get precise zword array from multiplication of source precise zword array and source precise zword array
+
+3 - 0x9d - 0x3 - div4pa - get precise dword array from division of source precise dword array and source precise dword array
+3 - 0x9d - 0x4 - div8pa - get precise qword array from division of source precise qword array and source precise qword array
+3 - 0x9d - 0x5 - divxpa - get precise xword array from division of source precise xword array and source precise xword array
+3 - 0x9d - 0x6 - divypa - get precise yword array from division of source precise yword array and source precise yword array
+3 - 0x9d - 0x7 - divzpa - get precise zword array from division of source precise zword array and source precise zword array
+
+3 - 0x9e - 0x3 - mod4pa - get precise dword array from modulus of source precise dword array and source precise dword array
+3 - 0x9e - 0x4 - mod8pa - get precise qword array from modulus of source precise qword array and source precise qword array
+3 - 0x9e - 0x5 - modxpa - get precise xword array from modulus of source precise xword array and source precise xword array
+3 - 0x9e - 0x6 - modypa - get precise yword array from modulus of source precise yword array and source precise yword array
+3 - 0x9e - 0x7 - modzpa - get precise zword array from modulus of source precise zword array and source precise zword array
+
+
+- Executable opcodes
+
+Type  Op     Alias
+2 - 0xa0 - jr    - Move instruction pointer to integer (x)word as executable address
+2 - 0xa1 - jd    - Move instruction pointer to immediate dword as executable address
+
+2 - 0xa2 - jet   - Move instruction pointer to integer (x)word as executable address, but only if source integer (x)word is equal to source integer (x)word
+2 - 0xa3 - jnet  - Move instruction pointer to integer (x)word as executable address, but only if source integer (x)word is not equal to source integer (x)word
+2 - 0xa4 - jgt   - Move instruction pointer to integer (x)word as executable address, but only if source integer (x)word is greater than source integer (x)word
+2 - 0xa5 - jlt   - Move instruction pointer to integer (x)word as executable address, but only if source integer (x)word is lesser than source integer (x)word
+
+2 - 0xa6 - jetu  - Move instruction pointer to unsigned integer (x)word as executable address, but only if source integer (x)word is equal to source integer (x)word
+2 - 0xa7 - jnetu - Move instruction pointer to unsigned integer (x)word as executable address, but only if source integer (x)word is not equal to source integer (x)word
+2 - 0xa8 - jgtu  - Move instruction pointer to unsigned integer (x)word as executable address, but only if source integer (x)word is greater than source integer (x)word
+2 - 0xa9 - jltu  - Move instruction pointer to unsigned integer (x)word as executable address, but only if source integer (x)word is lesser than source integer (x)word
+
+2 - 0xb0 - cr    - Save instruction pointer to stack, then move instruction pointer to integer (x)word as executable address
+2 - 0xb1 - cd    - Save instruction pointer to stack, then move instruction pointer to immediate dword as executable address
+
+2 - 0xb2 - cet   - Save instruction pointer to stack, then move instruction pointer to integer (x)word as executable address, but only if source integer (x)word is equal to source integer (x)word
+2 - 0xb3 - cnet  - Save instruction pointer to stack, then move instruction pointer to integer (x)word as executable address, but only if source integer (x)word is not equal to source integer (x)word
+2 - 0xb4 - cgt   - Save instruction pointer to stack, then move instruction pointer to integer (x)word as executable address, but only if source integer (x)word is greater than source integer (x)word
+2 - 0xb5 - clt   - Save instruction pointer to stack, then move instruction pointer to integer (x)word as executable address, but only if source integer (x)word is lesser than source integer (x)word
+
+2 - 0xb6 - cetu  - Save instruction pointer to stack, then move instruction pointer to unsigned integer (x)word as executable address, but only if source integer (x)word is equal to source integer (x)word
+2 - 0xb7 - cnetu - Save instruction pointer to stack, then move instruction pointer to unsigned integer (x)word as executable address, but only if source integer (x)word is not equal to source integer (x)word
+2 - 0xb8 - cgtu  - Save instruction pointer to stack, then move instruction pointer to unsigned integer (x)word as executable address, but only if source integer (x)word is greater than source integer (x)word
+2 - 0xb9 - cltu  - Save instruction pointer to stack, then move instruction pointer to unsigned integer (x)word as executable address, but only if source integer (x)word is lesser than source integer (x)word
+
+2 - 0xba - ret   - Pop instruction pointer from stack unsigned integer (x)word as executable address
+
+- Miscellaneous opcodes
+
+0xd0 to 0xfe - extend - miscellaneous opcodes
+0xff - no operation
+
+
+getids r0, 0xffffffff
+shliw  r0, 
+shlr
+setmem r0, 
+getrmq r2, Location

@@ -1,0 +1,73 @@
+z8 3
+hello: world: d4 0xffffffff, 0xa0, 0x12121212
+
+.united:
+z1 hex
+dspx hex, 1, 2
+var hex 7 << 8
+
+d1 0x10
+
+
+
+
+
+
+
+pad 0x10
+get i4 rr ax, ax
+al 16
+get i4 rr cx, ax
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+sys echo "Hello World LMAO HAHAHAH"
+
+
+pad 0x10
+get i8 rr ax, f0
+pad 0x10
+get i8 rr cx, f0
+pad 0x10
+get i8 rr ax, f8
+pad 0x10
+get i8 rr cx, f8
+pad 0x10
+get i8 rr r8, f0
+pad 0x10
+get i8 rr r9, f0
+pad 0x10
+get i8 rr r8, f8
+pad 0x10
+get i8 rr r9, f8
+
+pad 0x10
+get p8 rr f0, ax
+pad 0x10
+get p8 rr f8, ax
+pad 0x10
+get p8 rr f0, r9
+pad 0x10
+get p8 rr f8, r9
+
+
+
+
+
+
+
+

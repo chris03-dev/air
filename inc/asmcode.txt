@@ -1,0 +1,82 @@
+z8 3
+hello: world: d4 0xffffffff, 0xa0, 0x12121212
+
+.united:
+z1 hex
+
+var hex 7 << 8
+
+d1 0x10
+
+
+set p4 ri ax, 10000
+set i4 ri "hello world"
+>_
+
+pad 0x10
+get i4 rr ax, ax
+pad 0x10
+get i4 rr cx, ax
+pad 0x10
+get i4 rr dx, ax
+pad 0x10
+get i4 rr bx, ax
+pad 0x10
+get i4 rr sp, ax
+pad 0x10
+get i4 rr bp, ax
+pad 0x10
+get i4 rr si, ax
+pad 0x10
+get i4 rr di, ax
+pad 0x10
+get i4 rr r8, ax
+pad 0x10
+get i4 rr r9, ax
+pad 0x10
+get i4 rr ra, ax
+pad 0x10
+get i4 rr rb, ax
+pad 0x10
+get i4 rr rc, ax
+pad 0x10
+get i4 rr rd, ax
+pad 0x10
+get i4 rr re, ax
+pad 0x10
+get i4 rr rf, rf
+
+pad 0x10
+get i8 rr ax, ax
+pad 0x10
+get i8 rr cx, ax
+pad 0x10
+get i8 rr dx, ax
+pad 0x10
+get i8 rr bx, ax
+pad 0x10
+get i8 rr sp, ax
+pad 0x10
+get i8 rr bp, ax
+pad 0x10
+get i8 rr si, ax
+pad 0x10
+get i8 rr di, ax
+pad 0x10
+get i8 rr ra, ax
+pad 0x10
+get i8 rr rb, ax
+pad 0x10
+get i8 rr rc, ax
+pad 0x10
+get i8 rr rd, ax
+pad 0x10
+get i8 rr re, ax
+pad 0x10
+get i8 rr rf, rf
+
+
+
+
+
+sys echo "Hello World"
